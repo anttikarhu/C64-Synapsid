@@ -64,12 +64,35 @@ INIT    LDA #%01111111 ; SWITCH OFF CIA-1 INTERRUPTS
         LDA #%00001111
         STA VFMODE
 
-WAIT    LDA PORTB ; WAIT UNTIL SPACEBAR IS PRESSED
-        CMP #$F7 
-        BNE WAIT
+
+        ; TODO:
+        ; STEP 1:
+        ; WAIT FOR KEYPRESS "Z" WHICH WILL BE A "C" NOTE
+        ; SET FREQUENCY FOR THE NOTE
+        ; OPEN GATE
+        ; WAIT FOR NO KEY INPUT
+        ; CLOSE GATE
+
+
+        ; WAIT UNTIL STOP KEY PRESSED THEN EXIT
+        ; TODO:
+        ; EXPLAIN TO MYSELF WHAT HAPPENS HERE
+        SEI
+        LDA #%11111111
+        STA $DC02             
+        LDA #%00000000
+        STA $DC03             
+        LDA #%01111111
+        STA $DC00
+WAITKEY LDA $DC01
+        AND #%10000000 
+        BNE WAITKEY
+        CLI
 
 CLEAN   LDA #0 ; CLEAR SID VOLUME AND FILTERS,
         STA VFMODE
+        LDA #0 ; CLEAR VOICE 1 CONTROL,
+        STA CTRL1
         RTS ; AND THEN QUIT
 
 PLAYIRQ 
